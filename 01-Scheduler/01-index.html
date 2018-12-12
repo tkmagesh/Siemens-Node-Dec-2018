@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Scheduler - demo</title>
+	<script>
+		(function(){
+			window.addEventListener('DOMContentLoaded', init);
+			function init(){
+				var btnDoWork = document.getElementById('btnDoWork');
+				btnDoWork.addEventListener('click', onBtnDoWorkClick);
+			}
+
+			function onBtnDoWorkClick(){
+				displayMessage('Work started!');
+				doWork(workCompleted, workProgress);
+			}
+
+			function workCompleted(){
+				displayMessage('Work Completed!!');
+			}
+
+			function workProgress(percentCompleted){
+				var workProgress = document.getElementById('workProgress');
+				workProgress.value = percentCompleted;
+			}
+
+			function doWork(onWorkComplete, onWorkProgress){
+				var totalIterations = 1000,
+					currentIteration = 0;
+
+				function oneIteration(){	
+					for(var i=0; i < (10000 / totalIterations); i++){
+						for(var j=0; j<1000; j++){
+							for(var k=0; k< 1000; k++){
+								//
+							}
+						}
+					}
+					++currentIteration;
+					if (currentIteration % 10 === 0 && typeof onWorkProgress === 'function'){
+						var percentCompleted = (currentIteration/totalIterations) * 100;
+						onWorkProgress(percentCompleted);
+					}
+					if (currentIteration < totalIterations){
+						setTimeout(oneIteration);
+					} else {
+						if (typeof onWorkComplete === 'function')
+							onWorkComplete();
+						console.log('Job done!!');
+					}
+				}
+				oneIteration();
+			}
+
+			function displayMessage(msg){
+				var divMessages = document.getElementById('divMessages');
+				divMessages.innerHTML += msg + '<br/>';
+			}
+		})();
+	</script>
+</head>
+<body>
+	<input type="text" name="" id="">
+	<input type="button" value="Do Work" id="btnDoWork">
+	<div>
+		<progress id="workProgress" min="0" max="100" value="0">
+			
+		</progress>
+	</div>
+	<div id="divMessages"></div>
+</body>
+</html>
