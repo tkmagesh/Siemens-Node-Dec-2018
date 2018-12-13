@@ -28,8 +28,7 @@ var server = http.createServer(function(req, res,){
 			var stream = fs.createReadStream(resourceFullName);
 			stream.pipe(res);
 		});
-	}
-	else if (urlObj.pathname === '/calculator' && req.method === 'GET'){
+	} else if (urlObj.pathname === '/calculator' && req.method === 'GET'){
 		var data = querystring.parse(urlObj.query),
 			op = data.op,
 			x = parseInt(data.x),
