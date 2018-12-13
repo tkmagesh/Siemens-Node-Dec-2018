@@ -1,4 +1,5 @@
-var http = require('http');
+var http = require('http'),
+	path = require('path');
 
 var app = require('./app');
 	dataParser = require('./dataParser'),
@@ -6,9 +7,9 @@ var app = require('./app');
 	serveCalculator = require('./serveCalculator'),
 	notFoundHandler = require('./notFoundHandler');
 
-app.use(dataParser)
-app.use(serveStatic)
-app.use(serveCalculator)
+app.use(dataParser);
+app.use(serveStatic(path.join(__dirname, 'public')));
+app.use(serveCalculator);
 app.use(notFoundHandler);
 
 var server = http.createServer(app);
