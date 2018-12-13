@@ -1,5 +1,7 @@
-module.exports = function(res){
-	console.log('[@notFoundHandler] - serving 404');
-	res.statusCode = 404;
-	res.end();
+module.exports = function(req, res, next){
+	if (!res.finished){
+		res.statusCode = 404;
+		res.end();
+	};
+	next();
 }
