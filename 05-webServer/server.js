@@ -1,9 +1,20 @@
-var http = require('http');
+var http = require('http'),
+	fs = require('fs'),
+	path = require('path');
 
 var server = http.createServer(function(req /* ReadableStream */, res /* WritableStream*/){
 	console.log(req.method + '\t' + req.url);
-	res.write('<h1>Welcome to Node.js!</h1>');
-	res.end();
+	var resourceName = req.url === '/' ? 'index.html' : req.url;
+	var resourceFullName = path.join(__dirname, resourceName);
+	fs.stat(resourceFullName, function(err, stats){
+		if (err){
+			res.statusCode = 404;
+			res.end();
+			return;
+		}
+		var stream = fs.createReadStream(resourceFullName);
+		stream.pipe(res);
+	});
 });
 
 server.listen(8080);
