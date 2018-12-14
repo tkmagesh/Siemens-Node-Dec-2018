@@ -33,6 +33,7 @@ router.post('/', function(req, res, next){
 			});	
 });
 
+/*
 router.put('/:id', function(req, res, next){
 	var taskId = parseInt(req.params.id);
 	var updatedTaskData = req.body;
@@ -44,6 +45,18 @@ router.put('/:id', function(req, res, next){
 		.catch(function(err){
 			res.status(404).end();	
 		})
+});*/
+
+router.put('/:id', async function(req, res, next){
+	var taskId = parseInt(req.params.id);
+	var updatedTaskData = req.body;
+	try { 
+		var updatedTask = await taskService.update(taskId, updatedTaskData);
+		res.status(200).json(updatedTask);		
+	} catch (err){
+		res.status(404).end();	
+	}
+
 });
 
 router.delete('/:id', function(req, res, next){

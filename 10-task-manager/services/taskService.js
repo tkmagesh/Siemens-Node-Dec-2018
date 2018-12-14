@@ -15,20 +15,18 @@ function get(id){
 	});
 }
 
-function addNew(taskData){
+async function addNew(taskData){
+	
 	var newTaskId = tasks.reduce(function(result, task){
 		return result > task.id ? result : task.id;
 	}, 0) + 1;
 	taskData.id = newTaskId;
 	tasks.push(taskData);
-	return taskDb
-		.save(tasks)
-		.then(function(){
-			return taskData;
-		});
+	await taskDb.save(tasks);
+	return taskData;
 }
 
-function update(taskId, updatedTask){
+async function update(taskId, updatedTask){
 	var taskToReplace = tasks.find(function(task){
 		return task.id === taskId;
 	});
@@ -36,17 +34,15 @@ function update(taskId, updatedTask){
 		tasks = tasks.map(function(task){
 			return task.id === taskId ? updatedTask : task;
 		});
-		return taskDb
-			.save(tasks)
-			.then(function(){
-				return updatedTask;		
-			});
-		
+		await taskDb.save(tasks)
+		return updatedTask;		
 	} else {
 		/*return new Promise(function(resolveFn, rejectFn){
 			rejectFn(new Error('Task do not exist'));	
 		});*/
-		return Promise.reject(new Error('Task do not exist'));
+		//return Promise.reject(new Error('Task do not exist'));
+
+		throw new Error('Task do not exist');
 	}
 }
 
