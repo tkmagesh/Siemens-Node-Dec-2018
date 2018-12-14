@@ -2,7 +2,9 @@ var express = require('express');
 var router = express.Router();
 var taskService = require('../services/taskService');
 
-taskService.load();
+router['init'] = function(callback){
+	taskService.load(callback);
+}
 
 router.get('/', function(req, res, next){
 	var tasks = taskService.getAll();
@@ -21,8 +23,14 @@ router.get('/:id', function(req, res, next){
 
 router.post('/', function(req, res, next){
 	var taskData = req.body;
-	var newTask = taskService.addNew(taskData);
-	res.status(201).json(newTask);
+	taskService.addNew(taskData, function(err, newTask){
+		if (!err){
+			res.status(201).json(newTask);
+		} else {
+			res.status(404).end();
+		}
+	});
+	
 });
 
 router.put('/:id', function(req, res, next){
