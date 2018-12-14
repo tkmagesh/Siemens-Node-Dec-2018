@@ -2,14 +2,7 @@ var taskDb = require('./taskDb');
 var tasks = [];
 
 function load(callback){
-	taskDb.load(function(err, taskList){
-		if (err){
-			return callback(err);
-		} else {
-			tasks = taskList;
-			return callback(null);
-		}
-	});
+	tasks = taskDb.load();
 }
 
 function getAll(){
@@ -22,19 +15,17 @@ function get(id){
 	});
 }
 
-function addNew(taskData, callback){
+function addNew(taskData){
 	var newTaskId = tasks.reduce(function(result, task){
 		return result > task.id ? result : task.id;
 	}, 0) + 1;
 	taskData.id = newTaskId;
 	tasks.push(taskData);
-	taskDb.save(tasks, function(err){
-		if (!err){
-			callback(null, taskData)
-		} else {
-			callback(err);
-		}
-	});
+	return taskDb
+		.save(tasks)
+		.then(function(){
+			return taskData;
+		});
 }
 
 function update(taskId, updatedTask){
@@ -45,9 +36,17 @@ function update(taskId, updatedTask){
 		tasks = tasks.map(function(task){
 			return task.id === taskId ? updatedTask : task;
 		});
-		return updatedTask;
+		return taskDb
+			.save(tasks)
+			.then(function(){
+				return updatedTask;		
+			});
+		
 	} else {
-		throw new Error('Task do not exist');
+		/*return new Promise(function(resolveFn, rejectFn){
+			rejectFn(new Error('Task do not exist'));	
+		});*/
+		return Promise.reject(new Error('Task do not exist'));
 	}
 }
 
@@ -59,8 +58,11 @@ function remove(taskId){
 		tasks = tasks.filter(function(task){
 			return task.id !== taskId;
 		});
+		return taskDb
+			.save(tasks);
+		
 	} else {
-		throw new Error('Task do not exist');
+		return Promise.reject(new Error('Task do not exist'));
 	}
 }
 

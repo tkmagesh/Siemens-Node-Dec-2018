@@ -4,14 +4,14 @@
  * Module dependencies.
  */
 
-var appFactory = require('../app');
+var app = require('../app');
 var debug = require('debug')('10-task-manager:server');
 var http = require('http');
   
 /**
  * Get port from environment and store in Express.
  */
-appFactory(function(app){
+
   var port = normalizePort(process.env.PORT || '3000');
   app.set('port', port);
 
@@ -89,4 +89,3 @@ appFactory(function(app){
       : 'port ' + addr.port;
     debug('Listening on ' + bind);
   }
-});
